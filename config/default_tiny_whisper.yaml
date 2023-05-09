@@ -1,0 +1,5 @@
+model:
+  model: 'openai/whisper-small'
+
+data:
+  root: '/Users/tim/DFKI/datasets/BabyCry_augment_2'
