@@ -1,10 +1,9 @@
-from lightning.pytorch import Trainer
-from lightning.pytorch.utilities.model_summary import ModelSummary
 from omegaconf import OmegaConf
+from lightning.pytorch import Trainer
 
-from data.data_module import AugmentedDataModule
-from utils.parser import parse_arguments
 from src.model import Whisper
+from utils.parser import parse_arguments
+from data.data_module import AugmentedDataModule
 
 def main(args):
     config = OmegaConf.load(args.config)

@@ -13,9 +13,12 @@ class MyDataset(Dataset):
         row = self.df.iloc[index]
         audio, sr = audiofile.read(row['path'])
 
-        audio = audresample.resample(audio, sr, 16000)
+        audio = audresample.resample(audio, sr, 16000)[0]
 
-        return audio, 16000, row['label']
+        label = 0
+        if row['label'] == 'G': label = 1
+
+        return audio, 16000, label
 
     def __len__(self):
         return len(self.df)
