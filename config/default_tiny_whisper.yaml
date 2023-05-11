@@ -1,5 +1,7 @@
 model:
-  model: 'openai/whisper-small'
+  whisper: 'openai/whisper-small'
+  bilstm:
+    hidden_size: 64
 
 data:
   root: '/Users/tim/DFKI/datasets/BabyCry_augment_2'

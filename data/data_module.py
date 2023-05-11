@@ -23,7 +23,7 @@ class AugmentedDataModule(pl.LightningDataModule):
         self.save_hyperparameters()
         self.allow_zero_length_dataloader_with_multiple_devices = False
 
-        self.processor = WhisperProcessor.from_pretrained(self.config.model.model)        
+        self.processor = WhisperProcessor.from_pretrained(self.config.model.whisper)        
 
     def setup(self, stage=None):
         self.train = pd.read_csv(os.path.join(self.root, 'train.csv'))     
