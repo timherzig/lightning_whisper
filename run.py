@@ -11,7 +11,7 @@ def main(args):
     model = Whisper(config=config)
 
     trainer = Trainer()
-    df = AugmentedDataModule(config.data.root, config=config)
+    df = AugmentedDataModule(config.data.root, config=config, batch_size=config.train.batch_size)
     trainer.fit(model, datamodule=df)
 
     print('Done')

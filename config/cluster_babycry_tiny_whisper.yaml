@@ -4,7 +4,7 @@ model:
     hidden_size: 64
 
 data:
-  root: '/Users/tim/DFKI/datasets/BabyCry_augment_2'
+  root: '/netscratch/herzig/datasets/BabyCry_augment_1'
 
 train:
-  batch_size: 2
+  batch_size: 64
