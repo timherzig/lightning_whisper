@@ -23,20 +23,23 @@ class AugmentedDataModule(pl.LightningDataModule):
         self.save_hyperparameters()
         self.allow_zero_length_dataloader_with_multiple_devices = False
 
-        self.processor = WhisperProcessor.from_pretrained(self.config.model.whisper)        
+        self.processor = WhisperProcessor.from_pretrained(self.config.model.whisper)
+
+    def pad_collate(self, batch):
+        (x, sr, y) = zip(*batch)
+        x = self.processor.feature_extractor(x, sampling_rate=sr[0], return_tensors='pt').input_features
+        y = torch.Tensor(list(y))
+        
+        return x, sr[0], y        
 
     def setup(self, stage=None):
         self.train = pd.read_csv(os.path.join(self.root, 'train.csv'))     
         self.train = MyDataset(self.train)
+        self.test = pd.read_csv(os.path.join(self.root, 'test.csv'))     
+        self.test = MyDataset(self.test)
 
     def train_dataloader(self):
-        def pad_collate(batch):
-            (x, sr, y) = zip(*batch)
-            x = self.processor.feature_extractor(x, sampling_rate=sr[0], return_tensors='pt').input_features
-            y = torch.Tensor(list(y))
-            
-            return x, sr[0], y
+        return DataLoader(self.train, batch_size=self.batch_size, collate_fn=self.pad_collate)
     
-        train_dl = DataLoader(self.train, batch_size=self.batch_size, collate_fn=pad_collate)
-
-        return train_dl
+    def test_dataloader(self):
+        return DataLoader(self.test, batch_size=self.batch_size, collate_fn=self.pad_collate)

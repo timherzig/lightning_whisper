@@ -12,7 +12,11 @@ def main(args):
 
     trainer = Trainer(max_epochs=config.train.epochs)
     df = AugmentedDataModule(config.data.root, config=config, batch_size=config.train.batch_size)
-    trainer.fit(model, datamodule=df)
+    df.setup()
+
+    trainer.fit(model, train_dataloaders=df.train_dataloader())
+    
+    trainer.test(model, dataloaders=df.test_dataloader())
 
     print('Done')
 
