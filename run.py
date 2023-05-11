@@ -10,7 +10,7 @@ def main(args):
 
     model = Whisper(config=config)
 
-    trainer = Trainer()
+    trainer = Trainer(max_epochs=config.train.epochs)
     df = AugmentedDataModule(config.data.root, config=config, batch_size=config.train.batch_size)
     trainer.fit(model, datamodule=df)
 

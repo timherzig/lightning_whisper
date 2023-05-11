@@ -8,3 +8,4 @@ data:
 
 train:
   batch_size: 64
+  epochs: 100
