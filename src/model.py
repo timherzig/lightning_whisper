@@ -94,7 +94,7 @@ class Whisper(pl.LightningModule):
         self.test_acc.update(out, y)
         self.test_f1.update(out, y)
         loss = F.binary_cross_entropy(out, y)
-        self.log("test_loss", loss, prog_bar=True)
-        self.log("test_acc", self.test_acc, prog_bar=True)
-        self.log("test_f1", self.test_f1, prog_bar=True)
+        self.log("test_loss", loss, prog_bar=True, sync_dist=True)
+        self.log("test_acc", self.test_acc, prog_bar=True, sync_dist=True)
+        self.log("test_f1", self.test_f1, prog_bar=True, sync_dist=True)
         return loss
