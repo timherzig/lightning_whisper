@@ -65,12 +65,12 @@ class Whisper(pl.LightningModule):
 
         out = self.forward(x)
 
-        self.train_acc(out, y)
-        self.train_f1(out, y)
+        acc = self.train_acc(out, y)
+        f1 = self.train_f1(out, y)
         loss = F.binary_cross_entropy(out, y)
         self.log("train_loss", loss, prog_bar=True)
-        self.log("train_acc", self.train_acc, prog_bar=True)
-        self.log("train_f1", self.train_f1, prog_bar=True)
+        self.log("train_acc", acc, prog_bar=True)
+        self.log("train_f1", f1, prog_bar=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -78,12 +78,12 @@ class Whisper(pl.LightningModule):
 
         out = self.forward(x)
 
-        self.valid_acc(out, y)
-        self.valid_f1(out, y)
+        acc = self.valid_acc(out, y)
+        f1 = self.valid_f1(out, y)
         loss = F.binary_cross_entropy(out, y)
         self.log("valid_loss", loss, prog_bar=True)
-        self.log("valid_acc", self.valid_acc, prog_bar=True)
-        self.log("valid_f1", self.valid_f1, prog_bar=True)
+        self.log("valid_acc", acc, prog_bar=True)
+        self.log("valid_f1", f1, prog_bar=True)
         return loss
 
     def test_step(self, batch, batch_idx):
@@ -91,10 +91,10 @@ class Whisper(pl.LightningModule):
 
         out = self.forward(x)
 
-        self.test_acc(out, y)
-        self.test_f1(out, y)
+        acc = self.test_acc(out, y)
+        f1 = self.test_f1(out, y)
         loss = F.binary_cross_entropy(out, y)
         self.log("test_loss", loss, prog_bar=True, sync_dist=True)
-        self.log("test_acc", self.test_acc, prog_bar=True, sync_dist=True)
-        self.log("test_f1", self.test_f1, prog_bar=True, sync_dist=True)
+        self.log("test_acc", acc, prog_bar=True, sync_dist=True)
+        self.log("test_f1", f1, prog_bar=True, sync_dist=True)
         return loss
