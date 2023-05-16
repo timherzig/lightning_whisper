@@ -9,32 +9,44 @@ from transformers import WhisperModel, WhisperProcessor
 
 
 class Whisper(pl.LightningModule):
-    '''
+    """
     Simple model implementation for testing purposes
-    '''
+    """
 
     def __init__(self, config):
         super().__init__()
         self.config = config
 
-        self.train_acc = Accuracy(task='binary')
-        self.train_f1 = F1Score(task='binary')
-        self.valid_acc = Accuracy(task='binary')
-        self.valid_f1 = F1Score(task='binary')
-        self.test_acc = Accuracy(task='binary')
-        self.test_f1 = F1Score(task='binary')
+        self.train_acc = Accuracy(task="binary")
+        self.train_f1 = F1Score(task="binary")
+        self.valid_acc = Accuracy(task="binary")
+        self.valid_f1 = F1Score(task="binary")
+        self.test_acc = Accuracy(task="binary")
+        self.test_f1 = F1Score(task="binary")
 
-        self.processor = WhisperProcessor.from_pretrained(self.config.model.whisper) 
+        self.processor = WhisperProcessor.from_pretrained(self.config.model.whisper)
 
-        self.whisper_encoder = WhisperModel.from_pretrained(self.config.model.whisper).get_encoder()
+        self.whisper_encoder = WhisperModel.from_pretrained(
+            self.config.model.whisper
+        ).get_encoder()
         self.whisper_encoder.config.forces_decoder_ids = None
         self.whisper_encoder._freeze_parameters()
 
-        self.bilstm = nn.LSTM(self.whisper_encoder.embed_positions.embedding_dim, self.config.model.bilstm.hidden_size, bidirectional=True, batch_first=True)
-        self.linear1 = nn.Linear(2*self.whisper_encoder.embed_positions.num_embeddings*self.bilstm.hidden_size, 256)
+        self.bilstm = nn.LSTM(
+            self.whisper_encoder.embed_positions.embedding_dim,
+            self.config.model.bilstm.hidden_size,
+            bidirectional=True,
+            batch_first=True,
+        )
+        self.linear1 = nn.Linear(
+            2
+            * self.whisper_encoder.embed_positions.num_embeddings
+            * self.bilstm.hidden_size,
+            256,
+        )
         self.linear2 = nn.Linear(256, 1)
         self.sigmoid = nn.Sigmoid()
-        
+
     def forward(self, x, sr=16000):
         out = self.whisper_encoder(x).last_hidden_state
         out, _ = self.bilstm(out)
@@ -56,7 +68,9 @@ class Whisper(pl.LightningModule):
         self.train_acc.update(out, y)
         self.train_f1.update(out, y)
         loss = F.binary_cross_entropy(out, y)
-        self.log('train_loss', loss, prog_bar=True)
+        self.log("train_loss", loss, prog_bar=True)
+        self.log("train_acc", self.train_acc, prog_bar=True)
+        self.log("train_f1", self.train_f1, prog_bar=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -67,9 +81,11 @@ class Whisper(pl.LightningModule):
         self.valid_acc.update(out, y)
         self.valid_f1.update(out, y)
         loss = F.binary_cross_entropy(out, y)
-        self.log('valid_loss', loss, prog_bar=True)
+        self.log("valid_loss", loss, prog_bar=True)
+        self.log("valid_acc", self.valid_acc, prog_bar=True)
+        self.log("valid_f1", self.valid_f1, prog_bar=True)
         return loss
-    
+
     def test_step(self, batch, batch_idx):
         x, sr, y = batch
 
@@ -78,5 +94,7 @@ class Whisper(pl.LightningModule):
         self.test_acc.update(out, y)
         self.test_f1.update(out, y)
         loss = F.binary_cross_entropy(out, y)
-        self.log('test_loss', loss, prog_bar=True)
+        self.log("test_loss", loss, prog_bar=True)
+        self.log("test_acc", self.test_acc, prog_bar=True)
+        self.log("test_f1", self.test_f1, prog_bar=True)
         return loss
