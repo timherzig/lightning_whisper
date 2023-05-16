@@ -65,8 +65,8 @@ class Whisper(pl.LightningModule):
 
         out = self.forward(x)
 
-        self.train_acc.update(out, y)
-        self.train_f1.update(out, y)
+        self.train_acc(out, y)
+        self.train_f1(out, y)
         loss = F.binary_cross_entropy(out, y)
         self.log("train_loss", loss, prog_bar=True)
         self.log("train_acc", self.train_acc, prog_bar=True)
@@ -78,8 +78,8 @@ class Whisper(pl.LightningModule):
 
         out = self.forward(x)
 
-        self.valid_acc.update(out, y)
-        self.valid_f1.update(out, y)
+        self.valid_acc(out, y)
+        self.valid_f1(out, y)
         loss = F.binary_cross_entropy(out, y)
         self.log("valid_loss", loss, prog_bar=True)
         self.log("valid_acc", self.valid_acc, prog_bar=True)
@@ -91,8 +91,8 @@ class Whisper(pl.LightningModule):
 
         out = self.forward(x)
 
-        self.test_acc.update(out, y)
-        self.test_f1.update(out, y)
+        self.test_acc(out, y)
+        self.test_f1(out, y)
         loss = F.binary_cross_entropy(out, y)
         self.log("test_loss", loss, prog_bar=True, sync_dist=True)
         self.log("test_acc", self.test_acc, prog_bar=True, sync_dist=True)
