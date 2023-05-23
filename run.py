@@ -28,13 +28,15 @@ def main(args):
         num_nodes=args.nodes,
     )
     df = AugmentedDataModule(
-        config.data.root, config=config, batch_size=config.train.batch_size
+        config.data.root,
+        config=config,
+        batch_size=config.train.batch_size,
+        logger=logger,
     )
     df.setup()
 
-    trainer.fit(model, train_dataloaders=df.train_dataloader())
-
-    trainer.test(model, dataloaders=df.test_dataloader())
+    trainer.fit(model, datamodule=df)
+    trainer.test(model, datamodule=df)
 
     print("Done")
 
