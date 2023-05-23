@@ -31,7 +31,6 @@ def main(args):
         config.data.root,
         config=config,
         batch_size=config.train.batch_size,
-        logger=logger,
     )
     df.setup()
 
