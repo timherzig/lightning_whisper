@@ -1,0 +1,13 @@
+model:
+  whisper: 'openai/whisper-large'
+  bilstm:
+    hidden_size: 64
+
+data:
+  root: '/netscratch/herzig/datasets/BabyCry_augment_1'
+
+train:
+  batch_size: 64
+  epochs: 100
+  accelerator: 'gpu'
+  strategy: 'ddp'
