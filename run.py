@@ -10,7 +10,7 @@ from data.data_module import AugmentedDataModule
 
 def main(args):
     config = OmegaConf.load(args.config)
-    nrun = len(os.listdir("checkpoints/")) + 1
+    nrun = len(os.listdir("checkpoints/"))
     logger = WandbLogger(
         project="babycry_whisper",
         log_model=True,
