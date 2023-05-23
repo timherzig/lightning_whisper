@@ -7,7 +7,7 @@ data:
   root: '/netscratch/herzig/datasets/BabyCry_no_augment'
 
 train:
-  batch_size: 128
+  batch_size: 64
   epochs: 100
   accelerator: 'gpu'
   strategy: 'ddp'
